@@ -6,12 +6,13 @@ import (
 )
 
 // fingerprint represents a single entry in a bucket.
-type fingerprint uint16
+type fingerprint [2]byte
 
 type bucket [bucketSize]fingerprint
 
+var nullFp = [2]byte{0, 0}
+
 const (
-	nullFp              = 0
 	bucketSize          = 4
 	fingerprintSizeBits = 16
 	maxFingerprint      = (1 << fingerprintSizeBits) - 1

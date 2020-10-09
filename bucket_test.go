@@ -7,8 +7,8 @@ import (
 
 func TestBucket_Reset(t *testing.T) {
 	var bkt bucket
-	for i := fingerprint(0); i < bucketSize; i++ {
-		bkt[i] = i
+	for i := 0; i < bucketSize; i++ {
+		bkt[i] = fingerprint([2]byte{byte(i), byte(i)})
 	}
 	bkt.reset()
 

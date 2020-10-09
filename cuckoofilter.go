@@ -1,7 +1,6 @@
 package cuckoo
 
 import (
-	"encoding/binary"
 	"fmt"
 	"math/rand"
 )
@@ -130,10 +129,10 @@ func (cf *Filter) LoadFactor() float64 {
 func (cf *Filter) Encode() []byte {
 	bytes := make([]byte, 0, len(cf.buckets)*bucketSize*fingerprintSizeBits/8)
 	for _, b := range cf.buckets {
-		for _, f := range b {
-			next := make([]byte, 2)
-			binary.LittleEndian.PutUint16(next, uint16(f))
-			bytes = append(bytes, next...)
+		for _, fp := range b {
+			for _, fpByte := range fp {
+				bytes = append(bytes, fpByte)
+			}
 		}
 	}
 	return bytes
@@ -150,8 +149,9 @@ func Decode(bytes []byte) (*Filter, error) {
 		for j := range b {
 			var next []byte
 			next, bytes = bytes[0:2], bytes[2:]
+			asArr := [2]byte{next[0], next[1]}
 
-			if fp := fingerprint(binary.LittleEndian.Uint16(next)); fp != 0 {
+			if fp := fingerprint(asArr); fp != nullFp {
 				buckets[i][j] = fp
 				count++
 			}
