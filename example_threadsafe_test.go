@@ -9,7 +9,7 @@ import (
 
 // Small wrapper around cuckoo filter making it thread safe.
 type threadSafeFilter struct {
-	cf *cuckoo.Filter
+	cf *cuckoo.Filter[uint16]
 	mu sync.RWMutex
 }
 

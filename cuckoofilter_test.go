@@ -7,10 +7,10 @@ import (
 	"io"
 	"math"
 	"os"
-	"reflect"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 // optFloatNear considers float64 as equal if the relative delta is small.
@@ -231,7 +231,9 @@ func TestEncodeDecode(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
-	if !reflect.DeepEqual(cf, got) {
+	if !cmp.Equal(cf, got,
+		cmp.AllowUnexported(Filter[uint16]{}),
+		cmpopts.IgnoreFields(Filter[uint16]{}, "getFingerprint")) {
 		t.Errorf("Decode = %v, want %v, encoded = %v", got, cf, encoded)
 	}
 }

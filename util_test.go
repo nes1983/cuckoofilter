@@ -7,7 +7,9 @@ import (
 func TestIndexAndFP(t *testing.T) {
 	data := []byte("seif")
 	numBuckets := uint(1024)
-	i1, fp := getIndexAndFingerprint(data, numBuckets)
+	i1, fp := getIndexAndFingerprint(data, numBuckets, func(in uint64) uint16 {
+		return 2
+	})
 	i2 := getAltIndex(fp, i1, numBuckets)
 	i11 := getAltIndex(fp, i2, numBuckets)
 	i22 := getAltIndex(fp, i1, numBuckets)
