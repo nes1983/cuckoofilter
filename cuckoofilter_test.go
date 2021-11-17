@@ -21,7 +21,7 @@ var optFloatNear = cmp.Comparer(func(x, y float64) bool {
 })
 
 func TestInsertion(t *testing.T) {
-	cf := NewFilter(1000000)
+	cf := NewFilter(Config{NumElements: 1000000})
 	fd, err := os.Open("/usr/share/dict/words")
 	if err != nil {
 		t.Skipf("failed reading words: %v", err)
@@ -58,7 +58,7 @@ func TestInsertion(t *testing.T) {
 }
 
 func TestLookup(t *testing.T) {
-	cf := NewFilter(4)
+	cf := NewFilter(Config{NumElements: 4})
 	cf.Insert([]byte("one"))
 	cf.Insert([]byte("two"))
 	cf.Insert([]byte("three"))
@@ -86,7 +86,7 @@ func TestLookup(t *testing.T) {
 func TestFilter_LookupLarge(t *testing.T) {
 	const size = 10000
 	insertFail := 0
-	cf := NewFilter(size)
+	cf := NewFilter(Config{NumElements: size})
 	for i := 0; i < size; i++ {
 		if !cf.Insert([]byte{byte(i)}) {
 			insertFail++
@@ -105,8 +105,7 @@ func TestFilter_LookupLarge(t *testing.T) {
 }
 
 func TestFilter_Insert(t *testing.T) {
-	const cap = 10000
-	filter := NewFilter(cap)
+	filter := NewFilter(Config{NumElements: 10000})
 
 	var hash [32]byte
 
@@ -121,8 +120,7 @@ func TestFilter_Insert(t *testing.T) {
 }
 
 func BenchmarkFilter_Reset(b *testing.B) {
-	const cap = 10000
-	filter := NewFilter(cap)
+	filter := NewFilter(Config{NumElements: 10000})
 
 	b.ResetTimer()
 
@@ -132,8 +130,7 @@ func BenchmarkFilter_Reset(b *testing.B) {
 }
 
 func BenchmarkFilter_Insert(b *testing.B) {
-	const cap = 10000
-	filter := NewFilter(cap)
+	filter := NewFilter(Config{NumElements: 10000})
 
 	b.ResetTimer()
 
@@ -145,8 +142,7 @@ func BenchmarkFilter_Insert(b *testing.B) {
 }
 
 func BenchmarkFilter_Lookup(b *testing.B) {
-	const cap = 10000
-	filter := NewFilter(cap)
+	filter := NewFilter(Config{NumElements: 10000})
 
 	var hash [32]byte
 	for i := 0; i < 10000; i++ {
@@ -162,7 +158,7 @@ func BenchmarkFilter_Lookup(b *testing.B) {
 }
 
 func TestDelete(t *testing.T) {
-	cf := NewFilter(8)
+	cf := NewFilter(Config{NumElements: 8})
 	cf.Insert([]byte("one"))
 	cf.Insert([]byte("two"))
 	cf.Insert([]byte("three"))
@@ -187,7 +183,7 @@ func TestDelete(t *testing.T) {
 }
 
 func TestDeleteMultipleSame(t *testing.T) {
-	cf := NewFilter(4)
+	cf := NewFilter(Config{NumElements: 10})
 	for i := 0; i < 5; i++ {
 		cf.Insert([]byte("some_item"))
 	}
@@ -206,6 +202,7 @@ func TestDeleteMultipleSame(t *testing.T) {
 		{"some_item", true, 0},
 		{"some_item", false, 0},
 	}
+	t.Logf("Filter state full: %v", cf)
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("cf.Delete(%q)", tc.word), func(t *testing.T) {
 			if got, gotCount := cf.Delete([]byte(tc.word)), cf.Count(); got != tc.want || gotCount != tc.wantCount {
@@ -216,7 +213,7 @@ func TestDeleteMultipleSame(t *testing.T) {
 }
 
 func TestEncodeDecode(t *testing.T) {
-	cf := NewFilter(10)
+	cf := NewFilter(Config{NumElements: 10})
 	cf.Insert([]byte{1})
 	cf.Insert([]byte{2})
 	cf.Insert([]byte{3})
@@ -232,8 +229,8 @@ func TestEncodeDecode(t *testing.T) {
 		t.Errorf("Expected no error, got %v", err)
 	}
 	if !cmp.Equal(cf, got,
-		cmp.AllowUnexported(Filter[uint16]{}),
-		cmpopts.IgnoreFields(Filter[uint16]{}, "getFingerprint")) {
+		cmp.AllowUnexported(filter[uint16]{}),
+		cmpopts.IgnoreFields(filter[uint16]{}, "getFingerprint")) {
 		t.Errorf("Decode = %v, want %v, encoded = %v", got, cf, encoded)
 	}
 }

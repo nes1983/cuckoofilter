@@ -8,7 +8,7 @@ import (
 )
 
 func FuzzDecode(f *testing.F) {
-	cf := NewFilter(10)
+	cf := NewFilter(Config{NumElements: 10})
 	cf.Insert([]byte{1})
 	cf.Insert([]byte{2})
 	cf.Insert([]byte{3})
