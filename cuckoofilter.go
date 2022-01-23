@@ -112,7 +112,7 @@ func (cf *filter[T]) Insert(data []byte) bool {
 
 	// Apply cuckoo kickouts until a free space is found.
 	for k := 0; k < maxCuckooKickouts; k++ {
-		j := rand.Intn(bucketSize)
+		j := rand.Int63() & bucketSizeMask
 		// Swap fingerprint with bucket entry.
 		cf.buckets[i][j], fp = fp, cf.buckets[i][j]
 
