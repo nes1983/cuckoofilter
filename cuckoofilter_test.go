@@ -130,14 +130,18 @@ func BenchmarkFilter_Reset(b *testing.B) {
 }
 
 func BenchmarkFilter_Insert(b *testing.B) {
-	filter := NewFilter(Config{NumElements: 10000})
+	const size = 10000
+	filter := NewFilter(Config{NumElements: size})
 
 	b.ResetTimer()
 
 	var hash [32]byte
-	for i := 0; i < b.N; i++ {
-		io.ReadFull(rand.Reader, hash[:])
-		filter.Insert(hash[:])
+	for i := 0; i < b.N; {
+		for j := 0; j < size / 10; j++ {
+			io.ReadFull(rand.Reader, hash[:])
+			filter.Insert(hash[:])
+			i++
+		}
 	}
 }
 
