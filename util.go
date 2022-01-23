@@ -13,7 +13,7 @@ func getAltIndex[T fingerprintsize](fp T, i uint, bucketIndexMask uint) uint {
 	return (i ^ hash) & bucketIndexMask
 }
 
-func getFinterprintUint8(hash uint64) uint8 {
+func getFingerprintUint8(hash uint64) uint8 {
 	const fingerprintSizeBits = 8
 	const maxFingerprint = (1 << fingerprintSizeBits) - 1
 	// Use most significant bits for fingerprint.
@@ -23,7 +23,7 @@ func getFinterprintUint8(hash uint64) uint8 {
 	return uint8(fp)
 }
 
-func getFinterprintUint16(hash uint64) uint16 {
+func getFingerprintUint16(hash uint64) uint16 {
 	const fingerprintSizeBits = 16
 	const maxFingerprint = (1 << fingerprintSizeBits) - 1
 	// Use most significant bits for fingerprint.
@@ -33,7 +33,7 @@ func getFinterprintUint16(hash uint64) uint16 {
 	return uint16(fp)
 }
 
-func getFinterprintUint32(hash uint64) uint32 {
+func getFingerprintUint32(hash uint64) uint32 {
 	const fingerprintSizeBits = 32
 	const maxFingerprint = (1 << fingerprintSizeBits) - 1
 	// Use most significant bits for fingerprint.

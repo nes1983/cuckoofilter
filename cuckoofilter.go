@@ -66,7 +66,7 @@ func NewFilter(cfg Config) Filter {
 			buckets:         buckets,
 			count:           0,
 			bucketIndexMask: uint(len(buckets) - 1),
-			getFingerprint:  getFinterprintUint8,
+			getFingerprint:  getFingerprintUint8,
 		}
 	case High:
 		buckets := make([]bucket[uint32], numBuckets)
@@ -74,7 +74,7 @@ func NewFilter(cfg Config) Filter {
 			buckets:         buckets,
 			count:           0,
 			bucketIndexMask: uint(len(buckets) - 1),
-			getFingerprint:  getFinterprintUint32,
+			getFingerprint:  getFingerprintUint32,
 		}
 	default:
 		buckets := make([]bucket[uint16], numBuckets)
@@ -82,7 +82,7 @@ func NewFilter(cfg Config) Filter {
 			buckets:         buckets,
 			count:           0,
 			bucketIndexMask: uint(len(buckets) - 1),
-			getFingerprint:  getFinterprintUint16,
+			getFingerprint:  getFingerprintUint16,
 		}
 	}
 }
@@ -200,6 +200,6 @@ func Decode(bytes []byte) (Filter, error) {
 		buckets:         buckets,
 		count:           count,
 		bucketIndexMask: uint(len(buckets) - 1),
-		getFingerprint:  getFinterprintUint16,
+		getFingerprint:  getFingerprintUint16,
 	}, nil
 }
