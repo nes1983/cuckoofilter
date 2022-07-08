@@ -129,9 +129,7 @@ func (cf *Filter) Encode() []byte {
 	bytes := make([]byte, 0, len(cf.buckets)*bytesPerBucket)
 	for _, b := range cf.buckets {
 		for _, f := range b {
-			next := make([]byte, 2)
-			binary.LittleEndian.PutUint16(next, uint16(f))
-			bytes = append(bytes, next...)
+			bytes = binary.LittleEndian.AppendUint16(bytes, uint16(f))
 		}
 	}
 	return bytes
